@@ -20,12 +20,12 @@ const App = () => {
       <div className="absolute inset-0 bg-black opacity-40"></div>
 
       {/* flight filter section  with glass background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 p-4 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-30 border border-gray-100">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-2/3 w-[90%] p-4 bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-30 border border-gray-100">
         {/* title of the section */}
         <h3 className="text-2xl text-center my-4 text-white">
           Find Your Dream Flight
         </h3>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <ComboBox
             placeholder="Select Departure"
             searchPlaceholder="Search airport"
