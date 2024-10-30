@@ -2,11 +2,20 @@ import { Store } from "pullstate";
 
 export const FlightStore = new Store({
   airports: [],
-  from: "",
-  to: "",
+  from: { city_name: "", airport_name: "", search_contents: "" },
+  to: { city_name: "", airport_name: "", search_contents: "" },
   date: "",
   returnDate: "",
   airportsLoading: true,
+  tripType: "OneWay",
+  flightType: "any",
+  booking_class: "any",
+  baggage_option: "any",
+  traveler_details: {
+    adults: 0,
+    children: 0,
+    infants: 0,
+  },
 });
 
 // fetching all the airports from the api

@@ -14,41 +14,15 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 import { FlightStore } from "@/store/store";
-import { CommandLoading } from "cmdk";
-
-const airports = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
 
 export default function ComboBox({ placeholder, searchPlaceholder, storeKey }) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  //getting the state from the global store
   const state = FlightStore.useState((s) => s[storeKey]);
-
   const airportsData = FlightStore.useState((s) => s.airports);
   const isLoading = FlightStore.useState((s) => s.airportsLoading);
 
-  // Filter airports based on search input, then slice
+  // Filter airports based on search input
   const filteredAirports = airportsData
     ?.filter((airport) =>
       airport?.search_contents
@@ -57,10 +31,14 @@ export default function ComboBox({ placeholder, searchPlaceholder, storeKey }) {
     )
     ?.slice(0, 3);
 
-  const handleSelect = (currentValue) => {
+  const handleSelect = (airport) => {
     // Update the selected value in the global store
     FlightStore.update((s) => {
-      s[storeKey] = currentValue === state ? "" : currentValue;
+      s[storeKey] = {
+        city_name: airport.city_name,
+        airport_name: airport.airport_name,
+        search_contents: airport.search_contents,
+      };
     });
     setOpen(false);
   };
@@ -74,11 +52,7 @@ export default function ComboBox({ placeholder, searchPlaceholder, storeKey }) {
           aria-expanded={open}
           className="justify-between"
         >
-          {state
-            ? airportsData?.find(
-                (airport) => airport?.search_contents === state
-              )?.airport_name // Changed from search_contents to airport_name
-            : placeholder}
+          {state?.city_name ? `${state.city_name} (${state.airport_name})` : placeholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0">
@@ -90,25 +64,25 @@ export default function ComboBox({ placeholder, searchPlaceholder, storeKey }) {
             onValueChange={setSearchValue}
           />
           <CommandList>
-            {isLoading || <CommandEmpty>No airports found.</CommandEmpty>}
-            <CommandGroup>
-              {isLoading ? (
-                <div className="flex justify-center items-center h-full">
-                  <div className="border-gray-300 h-7 w-7 animate-spin rounded-full border-8 border-t-blue-600" />
-                </div>
-              ) : (
-                filteredAirports?.map((airport, index) => (
+            {isLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <div className="border-gray-300 h-7 w-7 animate-spin rounded-full border-8 border-t-blue-600" />
+              </div>
+            ) : filteredAirports.length === 0 ? (
+              <CommandEmpty>No airports found.</CommandEmpty>
+            ) : (
+              <CommandGroup>
+                {filteredAirports?.map((airport, index) => (
                   <CommandItem
                     key={index}
                     value={airport.search_contents}
-                    onSelect={() => handleSelect(airport?.search_contents)}
+                    onSelect={() => handleSelect(airport)} // Pass the whole airport object
                   >
-                    {airport.search_contents} - {airport.airport_name}{" "}
-                    {/* Updated to show both */}
+                    {airport?.search_contents}
                   </CommandItem>
-                ))
-              )}
-            </CommandGroup>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>
