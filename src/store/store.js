@@ -32,7 +32,6 @@ export const fetchAirports = async () => {
       }
     });
     const data = await response.json();
-    console.log(data);
     FlightStore.update((s) => {
       s.airports = data;
       s.airportsLoading = false;

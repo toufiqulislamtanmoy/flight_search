@@ -10,8 +10,6 @@ import { FlightStore } from "@/store/store";
 
 const SelectDropDown = ({ storeKey, options,placeholder }) => {
   const handleChange = (value) => {
-    console.log("Selected Value:", value);
-    console.log("Store Key:", storeKey);
     FlightStore.update((s) => {
       s[storeKey] = value;
     });
