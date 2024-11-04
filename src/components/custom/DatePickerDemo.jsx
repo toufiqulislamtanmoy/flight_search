@@ -12,8 +12,8 @@ import {
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { FlightStore } from "@/store/store"
 
-export function DatePickerDemo({ placeholder, storeKey}) {
-  const [date, setDate] = React.useState()
+export function DatePickerDemo({ placeholder, storeKey, defaultValue}) {
+  const [date, setDate] = React.useState(defaultValue)
   
   FlightStore.update((s) => {
     s[storeKey] = date;

@@ -8,30 +8,12 @@ import { Button } from "./components/ui/button";
 import { Dialog, DialogTrigger } from "./components/ui/dialog";
 import { DialogDemo } from "./components/custom/DialogDemo";
 import { FaUserLarge } from "react-icons/fa6";
-const tripTypeOptions = [
-  { label: "One Way", value: "OneWay" },
-  { label: "Round Trip", value: "RoundTrip" },
-];
+import { useNavigate } from "react-router-dom";
+import { baggageOption, bookingClassOptions, flightTypeOptions, tripTypeOptions } from "./utilits/selectDropDownOptions";
 
-const flightTypeOptions = [
-  { label: "Any", value: "any" },
-  { label: "Direct", value: "direct" },
-  { label: "Connecting", value: "connecting" },
-];
-
-const bookingClassOptions = [
-  { label: "Any", value: "any" },
-  { label: "Economy", value: "economy" },
-  { label: "Premium Economy", value: "premium_economy" },
-  { label: "Business", value: "business" },
-];
-
-const baggageOption = [
-  { label: "Any", value: "any" },
-  { label: "Only Baggage", value: "only_baggage" }
-];
 
 const App = () => {
+  const navigate = useNavigate();
   const { from, to, date, returnDate, tripType, flightType, booking_class, baggage_option, traveler_details } =
     FlightStore.useState((s) => ({
       from: s.from,
@@ -76,6 +58,7 @@ const App = () => {
       short_ref: "12121212121",
     };
     console.log(searchData);
+    navigate("/flight/search");
   };
 
   return (
@@ -113,16 +96,16 @@ const App = () => {
             </Dialog>
           </div>
           <div>
-            <SelectDropDown storeKey="tripType" options={tripTypeOptions} placeholder="Select Trip Type" />
+            <SelectDropDown storeKey="tripType" options={tripTypeOptions} placeholder="Select Trip Type" classNames="w-[130px]" />
           </div>
           <div>
-            <SelectDropDown storeKey="flightType" options={flightTypeOptions} placeholder="Select Flight Type" />
+            <SelectDropDown storeKey="flightType" options={flightTypeOptions} placeholder="Select Flight Type" classNames="w-[130px]" />
           </div>
           <div>
-            <SelectDropDown storeKey="booking_class" options={bookingClassOptions} placeholder="Select Booking Class" />
+            <SelectDropDown storeKey="booking_class" options={bookingClassOptions} placeholder="Select Booking Class" classNames="w-[130px]" />
           </div>
           <div>
-            <SelectDropDown storeKey="baggage_option" options={baggageOption} placeholder="Select Baggage Option" />
+            <SelectDropDown storeKey="baggage_option" options={baggageOption} placeholder="Select Baggage Option" classNames="w-[130px]" />
           </div>
         </div>
 
@@ -148,7 +131,7 @@ const App = () => {
         <div className="flex justify-center">
           <Button
             onClick={handleSearch}
-            className="rounded-full bg-pink-500/50"
+           className="rounded-full bg-pink-500/50 text-white hover:text-black transition-all duration-300 hover:bg-yellow-500/50"
           >
             Search
           </Button>
