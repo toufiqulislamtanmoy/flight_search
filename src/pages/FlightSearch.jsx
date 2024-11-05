@@ -15,14 +15,35 @@ import { useEffect, useState } from "react";
 import { FaHouseMedical, FaUserLarge } from "react-icons/fa6";
 import flightData from "../data/flight_search_result.json";
 import FlightCard from "@/components/custom/Cards/FlightCard";
-import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { Link, useLocation } from "react-router-dom";
+
+import ListSkeleton from "@/components/custom/Skeleton/ListSkeleton";
+import notFound from "../assets/not_found.png";
+import { filterFlights } from "../utilits/flightSearch";
 
 const FlightSearch = () => {
-  const [flightDatas, setFlightData] = useState(flightData);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  let searchData = location.state;
+  console.log(loading);
+  const [flightDatas, setFlightData] = useState([]);
+
+  // show more and show less functionllity
+  const handleViewMore = () => {
+    if (visibleCount >= flightDatas?.data?.length) {
+      setVisibleCount(10);
+    } else {
+      setVisibleCount(visibleCount + 10);
+    }
+  };
+
   useEffect(() => {
     fetchAirports();
-  }, []);
+    const filteredFlights = filterFlights(flightData.data, searchData);
+    setFlightData({ data: filteredFlights });
+    setLoading(false);
+  }, [searchData]);
 
   const {
     from,
@@ -47,6 +68,7 @@ const FlightSearch = () => {
   }));
 
   const handleSearch = () => {
+    setLoading(true);
     const searchData = {
       journey_type: tripType,
       leaving_airport: from?.airport_name,
@@ -62,60 +84,68 @@ const FlightSearch = () => {
     };
     if (searchData?.leaving_airport === searchData?.destination_airport) {
       alert("Departure and Destination cannot be the same");
+      setLoading(false);
       return;
     }
     const filteredFlights = filterFlights(flightData.data, searchData);
     setFlightData({ data: filteredFlights });
+    setLoading(false);
   };
 
-  function filterFlights(flights, searchParams) {
-    // journey type filter
-    let filteredFlights = flights.filter((flight) => {
-      return flight.journey_type === searchParams.journey_type;
-    });
-    // how many stop filter
-    if (searchParams?.non_stop_flight !== "any") {
-      filteredFlights = filteredFlights?.filter((flight) => {
-        return (
-          flight?.flight_group?.[0].no_of_stops ===
-          parseInt(searchParams.non_stop_flight)
-        );
-      });
-    }
-    // booking class filter
-    if (searchParams?.booking_class !== "any") {
-      filteredFlights = filteredFlights?.filter((flight) => {
-        const val =
-          flight?.flight_group?.[0]?.routes?.[0]?.booking_class?.cabin_class
-            .toLowerCase()
-            .includes(searchParams.booking_class.toLowerCase());
-        return val;
-      });
-    }
-    // leaving form filter
-    filteredFlights = filteredFlights?.filter((flight) => {
-      let leaving_place = flight?.flight_group?.[0]?.routes?.[0]?.origin_airport?.name?.toLowerCase().includes(searchParams?.leaving_airport?.toLowerCase());
-      let destination_place = flight?.flight_group?.[0]?.routes?.[flight.flight_group[0].routes.length - 1]?.destination_airport?.name?.toLowerCase().includes(searchParams?.destination_airport?.toLowerCase());
-      return leaving_place && destination_place;
-    });
-    // departure date filter and if the trip type is round trip then filter also return date
-    if(searchParams?.departure_date){
-      filteredFlights = filteredFlights?.filter((flight) => {
-        let data = flight?.calendar_flight_date;
-        let formattedDate =  format(searchParams?.departure_date, "yyyy-MM-dd")
-        return data === formattedDate;
-      })
-    }
-    if(searchParams?.tripType === "RoundTrip" && searchParams?.return_date){
-      filteredFlights = filteredFlights?.filter((flight) => {
-        let data = flight?.calendar_flight_date;
-        let formattedDate =  format(searchParams?.return_date, "yyyy-MM-dd")
-        return data === formattedDate;
-      })
-    }
-    return filteredFlights;
-  }
-  
+  // function filterFlights(flights, searchParams) {
+  //   // journey type filter
+  //   let filteredFlights = flights.filter((flight) => {
+  //     return flight.journey_type === searchParams?.journey_type;
+  //   });
+  //   // how many stop filter
+  //   if (searchParams?.non_stop_flight !== "any") {
+  //     filteredFlights = filteredFlights?.filter((flight) => {
+  //       return (
+  //         flight?.flight_group?.[0].no_of_stops ===
+  //         parseInt(searchParams?.non_stop_flight)
+  //       );
+  //     });
+  //   }
+  //   // booking class filter
+  //   if (searchParams?.booking_class !== "any") {
+  //     filteredFlights = filteredFlights?.filter((flight) => {
+  //       const val =
+  //         flight?.flight_group?.[0]?.routes?.[0]?.booking_class?.cabin_class
+  //           .toLowerCase()
+  //           .includes(searchParams.booking_class.toLowerCase());
+  //       return val;
+  //     });
+  //   }
+  //   // leaving form filter
+  //   filteredFlights = filteredFlights?.filter((flight) => {
+  //     let leaving_place =
+  //       flight?.flight_group?.[0]?.routes?.[0]?.origin_airport?.name
+  //         ?.toLowerCase()
+  //         .includes(searchParams?.leaving_airport?.toLowerCase());
+  //     let destination_place = flight?.flight_group?.[0]?.routes?.[
+  //       flight.flight_group[0].routes.length - 1
+  //     ]?.destination_airport?.name
+  //       ?.toLowerCase()
+  //       .includes(searchParams?.destination_airport?.toLowerCase());
+  //     return leaving_place && destination_place;
+  //   });
+  //   // departure date filter and if the trip type is round trip then filter also return date
+  //   if (searchParams?.departure_date) {
+  //     filteredFlights = filteredFlights?.filter((flight) => {
+  //       let data = flight?.calendar_flight_date;
+  //       let formattedDate = format(searchParams?.departure_date, "yyyy-MM-dd");
+  //       return data === formattedDate;
+  //     });
+  //   }
+  //   if (searchParams?.tripType === "RoundTrip" && searchParams?.return_date) {
+  //     filteredFlights = filteredFlights?.filter((flight) => {
+  //       let data = flight?.calendar_flight_date;
+  //       let formattedDate = format(searchParams?.return_date, "yyyy-MM-dd");
+  //       return data === formattedDate;
+  //     });
+  //   }
+  //   return filteredFlights;
+  // }
 
   return (
     <main className="container mx-auto font-poppins px-4">
@@ -216,12 +246,43 @@ const FlightSearch = () => {
         </div>
       </section>
 
-      {/* flight card section */}
       <section className="my-10 grid grid-cols-1 gap-10">
-        {flightDatas?.data?.map((flight, index) => {
-          return <FlightCard key={index} flightData={flight} />;
-        })}
+        {loading ? (
+          Array.from({ length: 10 }).map((_, index) => (
+            <ListSkeleton className="w-full h-[200px]" key={index} />
+          ))
+        ) : flightDatas?.data?.length === 0 ? (
+          <div className="flex justify-center items-center h-[30vh] gap-3">
+            <img
+              src={notFound}
+              alt="not found"
+              className="w-1/12 inline-block"
+            />
+            <p className="text-2xl font-bold">Oops!! No flights found</p>
+          </div>
+        ) : (
+          flightDatas?.data
+            ?.slice(0, visibleCount)
+            .map((flight, index) => (
+              <FlightCard key={index} flightData={flight} />
+            ))
+        )}
       </section>
+
+      {/* View More/See Less Button */}
+      {flightDatas?.data?.length > 10 && (
+        <div className="flex justify-center my-5">
+          <Button
+            variant="outline"
+            onClick={handleViewMore}
+            className="rounded-full bg-pink-500/50 text-white transition-all duration-300 hover:bg-yellow-500/50 hover:text-black"
+          >
+            {visibleCount >= flightDatas?.data?.length
+              ? "See Less"
+              : "View More"}
+          </Button>
+        </div>
+      )}
     </main>
   );
 };

@@ -32,33 +32,23 @@ const App = () => {
     fetchAirports();
   }, []);
 
-  const handleSearch = () => {
+  const handelRedirect = () => {
     const searchData = {
       journey_type: tripType,
-      segment: [
-        {
-          departure_airport_type: from?.airport_name,
-          departure_airport_code: from?.city_name,
-          arrival_airport_type: to?.airport_name,
-          arrival_airport_code: to?.city_name,
-          departure_date: date,
-          return_date: returnDate,
-        },
-      ],
+      leaving_airport: from?.airport_name,
+      destination_airport: to?.airport_name,
+      departure_date: date,
+      return_date: returnDate,
       travelers_adult: traveler_details?.adults,
       travelers_child: traveler_details?.children,
       travelers_infant: traveler_details?.infants,
-      preferred_carrier: [],
       non_stop_flight: flightType,
       baggage_option: baggage_option,
       booking_class: booking_class,
-      supplier_uid: "all",
-      partner_id: "",
-      language: "en",
-      short_ref: "12121212121",
     };
+    
     console.log(searchData);
-    navigate("/flight/search");
+    navigate("/flight/search", { state: searchData });
   };
 
   return (
@@ -96,16 +86,16 @@ const App = () => {
             </Dialog>
           </div>
           <div>
-            <SelectDropDown storeKey="tripType" options={tripTypeOptions} placeholder="Select Trip Type" classNames="w-[130px]" />
+            <SelectDropDown storeKey="tripType" defaultValue={tripType} options={tripTypeOptions} placeholder="Select Trip Type" classNames="w-[130px]" />
           </div>
           <div>
-            <SelectDropDown storeKey="flightType" options={flightTypeOptions} placeholder="Select Flight Type" classNames="w-[130px]" />
+            <SelectDropDown storeKey="flightType" defaultValue={flightType} options={flightTypeOptions} placeholder="Select Flight Type" classNames="w-[130px]" />
           </div>
           <div>
-            <SelectDropDown storeKey="booking_class" options={bookingClassOptions} placeholder="Select Booking Class" classNames="w-[130px]" />
+            <SelectDropDown storeKey="booking_class" defaultValue={booking_class} options={bookingClassOptions} placeholder="Select Booking Class" classNames="w-[130px]" />
           </div>
           <div>
-            <SelectDropDown storeKey="baggage_option" options={baggageOption} placeholder="Select Baggage Option" classNames="w-[130px]" />
+            <SelectDropDown storeKey="baggage_option" defaultValue={baggage_option} options={baggageOption} placeholder="Select Baggage Option" classNames="w-[130px]" />
           </div>
         </div>
 
@@ -122,15 +112,15 @@ const App = () => {
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
-          <DatePickerDemo placeholder="Departure Date" storeKey="date" />
+          <DatePickerDemo defaultValue={date} placeholder="Departure Date" storeKey="date" />
           {tripType == "RoundTrip" && (
-            <DatePickerDemo placeholder="Return Date" storeKey="returnDate" />
+            <DatePickerDemo defaultValue={returnDate} placeholder="Return Date" storeKey="returnDate" />
           )}
         </div>
 
         <div className="flex justify-center">
           <Button
-            onClick={handleSearch}
+            onClick={handelRedirect}
            className="rounded-full bg-pink-500/50 text-white hover:text-black transition-all duration-300 hover:bg-yellow-500/50"
           >
             Search
