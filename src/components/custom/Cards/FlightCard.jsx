@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
 const FlightCard = ({ flightData }) => {
-  console.log(flightData, "flightData");
   return (
     <div className="bg-gradient-to-r from-red-50 to-gray-200/50 p-4 shadow-lg rounded-md">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -23,9 +22,9 @@ const FlightCard = ({ flightData }) => {
 
             {/* date */}
             <p className="text-xxs text-gray-500">
-              {flightData?.flight_group[0]?.routes[0]?.flight_date &&
+              {flightData?.calendar_flight_date &&
                 format(
-                  new Date(flightData.flight_group[0].routes[0].flight_date),
+                  new Date(flightData?.calendar_flight_date),
                   "EEE, dd MMM yyyy"
                 )}
             </p>
@@ -85,15 +84,11 @@ const FlightCard = ({ flightData }) => {
                 )}
             </h5>
             {/* date */}
-            {flightData?.flight_group[0]?.routes[
-              flightData?.flight_group[0]?.routes?.length - 1
-            ]?.flight_date && (
+            {flightData?.calendar_arrival_date && (
               <p className="text-xxs text-gray-500">
                 {format(
                   new Date(
-                    flightData?.flight_group[0]?.routes[
-                      flightData?.flight_group[0]?.routes?.length - 1
-                    ]?.flight_date
+                    flightData?.calendar_arrival_date
                   ),
                   "EEE, dd MMM yyyy"
                 )}
