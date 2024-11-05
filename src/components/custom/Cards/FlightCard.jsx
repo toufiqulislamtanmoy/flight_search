@@ -44,9 +44,24 @@ const FlightCard = ({ flightData }) => {
           <p className="text-sm">Flight duration</p>
           <div className="h-[1px] w-2/5 mx-auto my-2 bg-gray-300"></div>
           <div className="flex gap-1">
-            <p>{flightData?.flight_group[0]?.flight_time?.slice(2)}</p>
+            <p>
+              { flightData?.flight_group[0]?.routes[
+                flightData?.flight_group[0]?.routes?.length - 1
+              ]?.lay_over === "not-applicable" ? "Non Stop" :
+              flightData?.flight_group[0]?.routes[
+                flightData?.flight_group[0]?.routes?.length - 1
+              ]?.lay_over?.slice(2)}
+            </p>
             -
-            <p> {flightData?.flight_group[0]?.routes[0]?.distance} Km</p>
+            <p>
+              {" "}
+              {
+                flightData?.flight_group[0]?.routes[
+                  flightData?.flight_group[0]?.routes?.length - 1
+                ]?.distance
+              }{" "}
+              Km
+            </p>
           </div>
         </div>
         {/* arriving to */}
@@ -57,32 +72,47 @@ const FlightCard = ({ flightData }) => {
           <div className="text-center">
             {/* time */}
             <h5 className="text-2xl font-semibold text-gray-700">
-              {flightData?.flight_group[0]?.routes[0]?.arrival_time &&
+              {flightData?.flight_group[0]?.routes[
+                flightData?.flight_group[0]?.routes?.length - 1
+              ]?.arrival_time &&
                 format(
-                  new Date(flightData.flight_group[0].routes[0].arrival_time),
+                  new Date(
+                    flightData.flight_group[0].routes[
+                      flightData?.flight_group[0]?.routes?.length - 1
+                    ].arrival_time
+                  ),
                   "HH:mm"
                 )}
             </h5>
             {/* date */}
-            <p className="text-xxs text-gray-500">
-              {flightData?.flight_group[0]?.routes[0]?.arrival_time &&
-                format(
-                  new Date(flightData.flight_group[0].routes[0].arrival_time),
+            {flightData?.flight_group[0]?.routes[
+              flightData?.flight_group[0]?.routes?.length - 1
+            ]?.flight_date && (
+              <p className="text-xxs text-gray-500">
+                {format(
+                  new Date(
+                    flightData?.flight_group[0]?.routes[
+                      flightData?.flight_group[0]?.routes?.length - 1
+                    ]?.flight_date
+                  ),
                   "EEE, dd MMM yyyy"
                 )}
-            </p>
+              </p>
+            )}
             {/* city */}
             <h5 className="text-xl font-semibold text-gray-700">
               {
-                flightData?.flight_group[0]?.routes[0]?.destination_airport
-                  ?.city
+                flightData?.flight_group[0]?.routes[
+                  flightData?.flight_group[0]?.routes?.length - 1
+                ]?.destination_airport?.city
               }
             </h5>
             {/* airport name */}
             <p className="text-xs text-gray-500">
               {
-                flightData?.flight_group[0]?.routes[1]?.destination_airport
-                  ?.name
+                flightData?.flight_group[0]?.routes[
+                  flightData?.flight_group[0]?.routes?.length - 1
+                ]?.destination_airport?.name
               }
             </p>
           </div>
