@@ -10,6 +10,7 @@ import { DialogDemo } from "./components/custom/DialogDemo";
 import { FaUserLarge } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { baggageOption, bookingClassOptions, flightTypeOptions, tripTypeOptions } from "./utilits/selectDropDownOptions";
+import Swal from "sweetalert2";
 
 
 const App = () => {
@@ -46,6 +47,18 @@ const App = () => {
       baggage_option: baggage_option,
       booking_class: booking_class,
     };
+
+    if(searchData?.destination_airport === searchData?.leaving_airport){
+      Swal.fire({
+        title: "Departure and Destination are same",
+        icon: "info",
+        html: `
+          You must select <b>Departure</b>, and <b>Destination</b> as different airports.
+        `,
+        showCloseButton: true
+      });
+      return;
+    }
     
     console.log(searchData);
     navigate("/flight/search", { state: searchData });

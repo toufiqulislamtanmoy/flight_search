@@ -20,6 +20,7 @@ import { Link, useLocation } from "react-router-dom";
 import ListSkeleton from "@/components/custom/Skeleton/ListSkeleton";
 import notFound from "../assets/not_found.png";
 import { filterFlights } from "../utilits/flightSearch";
+import Swal from "sweetalert2";
 
 const FlightSearch = () => {
   const [visibleCount, setVisibleCount] = useState(10);
@@ -83,7 +84,14 @@ const FlightSearch = () => {
       booking_class: booking_class,
     };
     if (searchData?.leaving_airport === searchData?.destination_airport) {
-      alert("Departure and Destination cannot be the same");
+      Swal.fire({
+        title: "Departure and Destination are same",
+        icon: "info",
+        html: `
+          You must select <b>Departure</b>, and <b>Destination</b> as different airports.
+        `,
+        showCloseButton: true
+      });
       setLoading(false);
       return;
     }
