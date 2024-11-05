@@ -16,6 +16,7 @@ import { FaHouseMedical, FaUserLarge } from "react-icons/fa6";
 import flightData from "../data/flight_search_result.json";
 import FlightCard from "@/components/custom/Cards/FlightCard";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
 const FlightSearch = () => {
   const [flightDatas, setFlightData] = useState(flightData);
@@ -63,12 +64,8 @@ const FlightSearch = () => {
       alert("Departure and Destination cannot be the same");
       return;
     }
-
-    console.log(searchData);
-
     const filteredFlights = filterFlights(flightData.data, searchData);
     setFlightData({ data: filteredFlights });
-    console.log("flights------>", filteredFlights);
   };
 
   function filterFlights(flights, searchParams) {
@@ -101,10 +98,19 @@ const FlightSearch = () => {
       let destination_place = flight?.flight_group?.[0]?.routes?.[flight.flight_group[0].routes.length - 1]?.destination_airport?.name?.toLowerCase().includes(searchParams?.destination_airport?.toLowerCase());
       return leaving_place && destination_place;
     });
-
+    // departure date filter and if the trip type is round trip then filter also return date
     if(searchParams?.departure_date){
       filteredFlights = filteredFlights?.filter((flight) => {
-        return flight?.calendar_flight_date === searchParams?.departure_date;
+        let data = flight?.calendar_flight_date;
+        let formattedDate =  format(searchParams?.departure_date, "yyyy-MM-dd")
+        return data === formattedDate;
+      })
+    }
+    if(searchParams?.tripType === "RoundTrip" && searchParams?.return_date){
+      filteredFlights = filteredFlights?.filter((flight) => {
+        let data = flight?.calendar_flight_date;
+        let formattedDate =  format(searchParams?.return_date, "yyyy-MM-dd")
+        return data === formattedDate;
       })
     }
     return filteredFlights;
