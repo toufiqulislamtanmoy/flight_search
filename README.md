@@ -1,6 +1,7 @@
 ## Flight Search App: Airport Autocompletion and Global State Management
 
-This project showcases a flight search application with a key focus on **airport autocompletion** and **efficient global state management**. It's designed to provide a smooth user experience by offering relevant airport suggestions as the user types, while ensuring all search criteria are consistently tracked within a global store. 
+This project is a flight search application designed to make finding flights faster and more convenient for users. It leverages **smart airport autocompletion**, allowing users to quickly select their desired departure and destination airports with **dynamic suggestions**.  A **global state management** system ensures all search parameters are consistently stored and accessible across the application, leading to a seamless and robust experience. To enhance usability, the search results are dynamically displayed in batches of ten, with **"Show More"** and **"Show Less"** buttons providing control over the displayed results. The project prioritizes a user-friendly interface and a comprehensive approach to flight search. 
+
 
 Here's a breakdown of the project's key features:
 
@@ -23,10 +24,29 @@ Here's a breakdown of the project's key features:
       - Booking class and baggage options.
       - Loading status of airport data.
 
+Okay, here's the updated markdown without code:
+
 **3. Search Functionality:**
 
-   - The application includes a "Search" button that triggers the search handler when clicked.
-   - The search handler gathers all the search parameters from the global state and logs them to the console.
+The application includes a "Search" button that triggers the search handler when clicked.  After the user fills in all necessary information, clicking the "Search" button will:
+
+1. **Retrieve Search Parameters:** The search handler gathers all the search parameters from the global state. 
+2. **Redirect to `/flight/search` Route:** The user is then redirected to the `/flight/search` route.
+3. **Display Search Results:** On the `/flight/search` page:
+    - If flight results are found, they will be displayed.
+    - If no results are found, a message like "No flights found" will be shown.
+
+**4. Show More/Show Less Functionality on Flight Search Results Page:**
+
+- **Initial Display:** When the search results page loads, it will initially display only the 10 results.
+- **"Show More" Button:** If there are more results than 10, a "Show More" button will be visible. 
+- **"Show More" Click:** When the user clicks "Show More":
+   - The next 10 results will be added to the displayed list.
+   - The "Show More" button will remain active until all results are displayed. 
+- **"Show Less" Button:** When all results are displayed, the "Show More" button will be replaced with a "Show Less" button.
+- **"Show Less" Click:** When the user clicks "Show Less":
+   - The display will be reset to show only the first 10 results.
+   - The "Show More" button will reappear if there are more results than 10.
 
 **The project aims to demonstrate the following:**
 
@@ -47,6 +67,10 @@ The project is structured as follows:
             - `DatePickerDemo.jsx`: Date Picker component.
             - `DialogDemo.jsx`: Dialog component for traveler details input.
             - `SelectDropDown.jsx`: Dropdown component for trip type, flight type, booking class, and baggage options.
+            - **Card**: Display Flight Card
+               - `FlightCard.jsx`: Reuseable Custom Component to render flight information as card
+            - **Skeleton**: Display Loader Skeleton when data is filterd
+               - `ListSkeleton.jsx`: Display Loader Skeleton when data is filterd
         - **ui:**
             - `button.jsx`: Button component.
             - `command.jsx`: Command component (used within ComboBox).
@@ -56,8 +80,16 @@ The project is structured as follows:
             - `input.jsx`: Input component (used within DialogDemo).
             - `label.jsx`: Label component (used within DialogDemo).
             - `calendar.jsx`: Calendar component (used within DatePickerDemo).
+         
+    - **data:** Contains flights `json` data
+        - `flight_search_result.json`: Flights data for searching  
+    - **pages:** Contains all the pages
+        - `FlightSearch.jsx`: Display search result page 
     - **assets:** Contains media files:
         - `bg_video.mp4`: Background video for the app.
+    - **utilits:** Contains all the helper functions and drop-down options:
+        - `flightSearch.js`: The flightSearch function is used to filter flights.
+        - `selectDropDownOptions.js`: Here have all the necessary drop-down options.
     - **store:** Contains global store management:
         - `store.jsx`: FlightStore object and `fetchAirports` function.
     - **App.jsx:** Main application component.
